@@ -8,7 +8,6 @@ export function HowItWorks() {
         </li>
         <li>🔍 We analyze mod info, versions, load order, and links — right in your browser.</li>
         <li>🪄 Voilà — a fully readable, link-rich modding guide.</li>
-        <li>📤 Export it or share it however you like.</li>
       </ul>
     </section>
   );
