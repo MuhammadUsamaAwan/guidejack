@@ -79,4 +79,12 @@ export type Mod = {
   version?: string;
   directUrl?: string;
   size?: number;
+  description?: string;
+  files?: Files[];
+};
+
+export type Files = {
+  path: string;
+  sourceDataId: string;
+  size: number;
 };

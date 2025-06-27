@@ -14,6 +14,16 @@ export function App() {
   const [mods, setMods] = useState<Mod[]>([]);
   const [showGuide, setShowGuide] = useState(false);
   const [modInfo, setModInfo] = useState<ModListInfo>();
+  const [zip, setZip] = useState<Record<string, Uint8Array>>({});
+
+  function downloadFile(sourceDataId: string, fileName: string) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([strFromU8(zip[sourceDataId])], { type: 'application/octet-stream' }));
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   if (showGuide) {
     return (
@@ -27,7 +37,7 @@ export function App() {
         </button>
         <ModListInfoCard modlistInfo={modInfo!} />
         {mods.map(mod => (
-          <ModCard key={mod.name + mod.modId} mod={mod} />
+          <ModCard key={mod.name + mod.modId} mod={mod} downloadFile={downloadFile} />
         ))}
       </div>
     );
@@ -49,6 +59,7 @@ export function App() {
 
             setMessages(prev => [...prev, { text: 'Unzipping file...', type: 'info' }]);
             const zip = unzipSync(new Uint8Array(buf));
+            setZip(zip);
 
             setMessages(prev => [...prev, { text: 'Collecting information...', type: 'info' }]);
             const modlistRaw = zip.modlist;
@@ -106,6 +117,14 @@ export function App() {
                   modId: archive?.State.ModID,
                   fileId: archive?.State.FileID,
                   size: archive?.Size,
+                  description: archive?.State.Description,
+                  files: directives
+                    .filter(d => !d.To.endsWith('meta.ini'))
+                    .map(d => ({
+                      path: d.To.replace(`mods\\${modName.slice(1)}\\`, ''),
+                      sourceDataId: (d.SourceDataID || d.PatchID) as string,
+                      size: d.Size,
+                    })),
                 });
               }
             }

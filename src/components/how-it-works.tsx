@@ -7,7 +7,7 @@ export function HowItWorks() {
           Upload your <code>.wabbajack</code> file.
         </li>
         <li>We parse everything and handle the mod-magic behind the scenes ✨</li>
-        <li>Voilà — a readable, shareable, manual modding guide.</li>
+        <li>Voilà — a readable, manual modding guide.</li>
       </ul>
     </section>
   );

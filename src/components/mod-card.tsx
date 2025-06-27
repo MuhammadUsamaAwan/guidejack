@@ -1,9 +1,16 @@
 import { Badge } from '~/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '~/components/ui/collapsible';
 import { Separator } from '~/components/ui/separator';
 import { cn, formatSize } from '~/lib/utils';
 import type { Mod } from '~/types';
 
-export function ModCard({ mod }: { mod: Mod }) {
+export function ModCard({
+  mod,
+  downloadFile,
+}: {
+  mod: Mod;
+  downloadFile: (sourceDataId: string, fileName: string) => void;
+}) {
   if (mod.type === 'separator') {
     return (
       <div>
@@ -36,7 +43,7 @@ export function ModCard({ mod }: { mod: Mod }) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              Mod Page
+              Nexux Page
             </a>
           </Badge>
         )}
@@ -47,7 +54,7 @@ export function ModCard({ mod }: { mod: Mod }) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              Files Page
+              Nexus Files Tab
             </a>
           </Badge>
         )}
@@ -58,11 +65,41 @@ export function ModCard({ mod }: { mod: Mod }) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              Download
+              Nexus Download
             </a>
           </Badge>
         )}
       </div>
+      <p className='mt-2 text-muted-foreground text-sm'>{mod.description}</p>
+      {mod.files?.length ? (
+        <Collapsible>
+          <CollapsibleTrigger className='my-2 cursor-pointer text-muted-foreground text-sm'>
+            Show Files
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <code className='text-muted-foreground text-sm'>
+              {mod.files?.map(f => (
+                <div key={f.path}>
+                  {f.path} ({formatSize(f.size)})
+                  {f.sourceDataId ? (
+                    <button
+                      className='ml-1 cursor-pointer underline'
+                      onClick={() => {
+                        downloadFile(f.sourceDataId, f.path.split('\\').pop() ?? 'file');
+                      }}
+                      type='button'
+                    >
+                      Download
+                    </button>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              ))}
+            </code>
+          </CollapsibleContent>
+        </Collapsible>
+      ) : null}
     </div>
   );
 }
