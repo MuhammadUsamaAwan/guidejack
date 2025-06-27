@@ -4,10 +4,11 @@ import { Dropzone } from './components/dropzone';
 import { Hero } from './components/hero';
 import { HowItWorks } from './components/how-it-works';
 import { ModCard } from './components/mod-card';
+import { ModFiles } from './components/mod-files';
 import { ModListInfoCard } from './components/modlist-info-card';
 import { ProgressMessages } from './components/progress-messages';
 import { WhyGuideJack } from './components/why-guidejack';
-import type { Mod, ModListInfo, Modlist } from './types';
+import type { Mod, ModFile, ModListInfo, Modlist } from './types';
 
 export function App() {
   const [messages, setMessages] = useState<{ text: string; type: 'info' | 'success' | 'error' }[]>([]);
@@ -15,6 +16,7 @@ export function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [modInfo, setModInfo] = useState<ModListInfo>();
   const [zip, setZip] = useState<Record<string, Uint8Array>>({});
+  const [modFiles, setModFiles] = useState<ModFile[]>([]);
 
   function downloadFile(sourceDataId: string, fileName: string) {
     const link = document.createElement('a');
@@ -36,6 +38,7 @@ export function App() {
           Hide Guide
         </button>
         <ModListInfoCard modlistInfo={modInfo!} />
+        <ModFiles modFiles={modFiles} downloadFile={downloadFile} />
         {mods.map(mod => (
           <ModCard key={mod.name + mod.modId} mod={mod} downloadFile={downloadFile} />
         ))}
@@ -78,11 +81,32 @@ export function App() {
               isNSFW: modlistJson.IsNSFW,
             });
 
-            setMessages(prev => [...prev, { text: 'Searching modlist...', type: 'info' }]);
+            setMessages(prev => [...prev, { text: 'Processing modlist files...', type: 'info' }]);
+            const modFiles = modlistJson.Directives.filter(
+              d => d.To.startsWith('profiles\\') && d.To.endsWith('.ini') && !d.To.includes('backup')
+            );
+            const loadOrderFile = modlistJson.Directives.find(d => d.To.endsWith('loadorder.txt'));
+            const modFilesList: ModFile[] = modFiles.map(d => ({
+              name: d.To.split('\\').pop() || 'unknown.ini',
+              sourceDataId: (d.SourceDataID || d.PatchID || d.TempID) as string,
+            }));
+            if (loadOrderFile) {
+              modFilesList.push({
+                name: 'loadorder.txt',
+                sourceDataId: loadOrderFile.SourceDataID as string,
+              });
+            }
             const modlistSource = modlistJson.Directives.find(d => d.To.endsWith('modlist.txt'))?.SourceDataID;
             if (!modlistSource) {
               throw new Error('No modlist found in the directives.');
             }
+            modFilesList.push({
+              name: 'modlist.txt',
+              sourceDataId: modlistSource,
+            });
+            setModFiles(modFilesList);
+
+            setMessages(prev => [...prev, { text: 'Parsing mods order...', type: 'info' }]);
             const sourceFile = zip[modlistSource];
             if (!sourceFile) {
               throw new Error("Couldn't find modlist source");
@@ -122,7 +146,7 @@ export function App() {
                     .filter(d => !d.To.endsWith('meta.ini'))
                     .map(d => ({
                       path: d.To.replace(`mods\\${modName.slice(1)}\\`, ''),
-                      sourceDataId: (d.SourceDataID || d.PatchID) as string,
+                      sourceDataId: (d.SourceDataID || d.PatchID || d.TempID) as string,
                       size: d.Size,
                     })),
                 });

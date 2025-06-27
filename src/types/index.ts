@@ -55,6 +55,7 @@ export type Directive = {
   SourceDataID?: string;
   FromHash?: string;
   PatchID?: string;
+  TempID?: string;
 };
 
 export type ModListInfo = {
@@ -80,11 +81,16 @@ export type Mod = {
   directUrl?: string;
   size?: number;
   description?: string;
-  files?: Files[];
+  files?: File[];
 };
 
-export type Files = {
+export type File = {
   path: string;
   sourceDataId: string;
   size: number;
+};
+
+export type ModFile = {
+  name: string;
+  sourceDataId: string;
 };
