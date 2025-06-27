@@ -1,5 +1,6 @@
 import { Badge } from '~/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { pascalCaseToTitleCase } from '~/lib/utils';
 import type { ModListInfo } from '~/types';
 
 export function ModListInfoCard({ modlistInfo }: { modlistInfo: ModListInfo }) {
@@ -19,8 +20,8 @@ export function ModListInfoCard({ modlistInfo }: { modlistInfo: ModListInfo }) {
           <span className='text-muted-foreground'>{modlistInfo.author}</span>
         </div>
         <div className='text-sm'>
-          <span className='font-medium'>🎮 Game Type:</span>{' '}
-          <span className='text-muted-foreground'>{modlistInfo.gameType}</span>
+          <span className='font-medium'>🎮 Game:</span>{' '}
+          <span className='text-muted-foreground'>{pascalCaseToTitleCase(modlistInfo.gameType)}</span>
         </div>
         <div className='text-sm'>
           <span className='font-medium'>🛠️ Version:</span>{' '}

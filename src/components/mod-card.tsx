@@ -70,11 +70,11 @@ export function ModCard({
           </Badge>
         )}
       </div>
-      <p className='mt-2 text-muted-foreground text-sm'>{mod.description}</p>
+      {mod.description && <p className='mt-2 text-muted-foreground text-sm'>{mod.description}</p>}
       {mod.files?.length ? (
         <Collapsible>
-          <CollapsibleTrigger className='my-2 cursor-pointer text-muted-foreground text-sm'>
-            Show Files
+          <CollapsibleTrigger className='my-2 cursor-pointer text-muted-foreground text-sm underline'>
+            Show/Hide Files
           </CollapsibleTrigger>
           <CollapsibleContent>
             <code className='text-muted-foreground text-sm'>

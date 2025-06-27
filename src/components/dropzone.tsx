@@ -44,8 +44,8 @@ export function Dropzone({ onFilesAccepted, className }: DropzoneProps) {
     <Card
       {...getRootProps()}
       className={cn(
-        'cursor-pointer rounded-2xl border-2 border-muted border-dashed p-6 text-center transition-all hover:border-primary',
-        isDragActive && 'border-primary bg-muted',
+        'cursor-pointer rounded-2xl border-2 border-muted border-dashed text-center transition-all hover:border-primary',
+        isDragActive && 'border-primary',
         className
       )}
     >

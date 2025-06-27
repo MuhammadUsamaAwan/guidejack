@@ -1,13 +1,14 @@
 export function HowItWorks() {
   return (
-    <section className='w-full text-left'>
-      <h2 className='mb-2 font-semibold text-2xl'>How It Works</h2>
+    <section>
+      <h2 className='mb-2 font-semibold text-2xl'>🛠 How It Works</h2>
       <ul className='list-disc space-y-2 pl-6 text-muted-foreground'>
         <li>
-          Upload your <code>.wabbajack</code> file.
+          📂 Drop in your <code>.wabbajack</code> file.
         </li>
-        <li>We parse everything and handle the mod-magic behind the scenes ✨</li>
-        <li>Voilà — a readable, manual modding guide.</li>
+        <li>🔍 We analyze mod info, versions, load order, and links — right in your browser.</li>
+        <li>🪄 Voilà — a fully readable, link-rich modding guide.</li>
+        <li>📤 Export it or share it however you like.</li>
       </ul>
     </section>
   );
