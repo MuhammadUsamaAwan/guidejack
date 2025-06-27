@@ -1,6 +1,6 @@
 import { Badge } from '~/components/ui/badge';
 import { Separator } from '~/components/ui/separator';
-import { formatSize } from '~/lib/utils';
+import { cn, formatSize } from '~/lib/utils';
 import type { Mod } from '~/types';
 
 export function ModCard({ mod }: { mod: Mod }) {
@@ -16,7 +16,7 @@ export function ModCard({ mod }: { mod: Mod }) {
 
   return (
     <div>
-      <div className='font-medium'>
+      <div className={cn('font-medium', !mod.active && 'line-through')}>
         {mod.index}. {mod.name}
         {mod.version && <span className='text-muted-foreground'> — v{mod.version}</span>}
         {mod.size && <span className='text-muted-foreground'> ({formatSize(mod.size)})</span>}
