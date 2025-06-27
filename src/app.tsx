@@ -12,11 +12,19 @@ import type { Mod, ModListInfo, Modlist } from './types';
 export function App() {
   const [messages, setMessages] = useState<{ text: string; type: 'info' | 'success' | 'error' }[]>([]);
   const [mods, setMods] = useState<Mod[]>([]);
+  const [showGuide, setShowGuide] = useState(false);
   const [modInfo, setModInfo] = useState<ModListInfo>();
 
-  if (messages.some(m => m.type === 'success')) {
+  if (showGuide) {
     return (
       <div className='mx-auto max-w-4xl space-y-8 py-10'>
+        <button
+          className='cursor-pointer text-muted-foreground text-sm underline'
+          type='button'
+          onClick={() => setShowGuide(false)}
+        >
+          Hide Guide
+        </button>
         <ModListInfoCard modlistInfo={modInfo!} />
         {mods.map(mod => (
           <ModCard key={mod.name + mod.modId} mod={mod} />
@@ -31,6 +39,9 @@ export function App() {
       <Dropzone
         className='mx-auto max-w-xl'
         onFilesAccepted={async files => {
+          setMessages([]);
+          setModInfo(undefined);
+          setMods([]);
           try {
             setMessages([{ text: 'Processing file...', type: 'info' }]);
             const file = files[0];
@@ -39,7 +50,7 @@ export function App() {
             setMessages(prev => [...prev, { text: 'Unzipping file...', type: 'info' }]);
             const zip = unzipSync(new Uint8Array(buf));
 
-            setMessages(prev => [...prev, { text: 'Searching for modlist.json...', type: 'info' }]);
+            setMessages(prev => [...prev, { text: 'Collecting information...', type: 'info' }]);
             const modlistRaw = zip.modlist;
             if (!modlistRaw) {
               throw new Error('No modlist.json found in the wabbajack file.');
@@ -56,7 +67,7 @@ export function App() {
               isNSFW: modlistJson.IsNSFW,
             });
 
-            setMessages(prev => [...prev, { text: 'Searching for modlist...', type: 'info' }]);
+            setMessages(prev => [...prev, { text: 'Searching modlist...', type: 'info' }]);
             const modlistSource = modlistJson.Directives.find(d => d.To.endsWith('modlist.txt'))?.SourceDataID;
             if (!modlistSource) {
               throw new Error('No modlist found in the directives.');
@@ -73,44 +84,32 @@ export function App() {
 
             setMessages(prev => [...prev, { text: 'Modlist found, processing...', type: 'info' }]);
             let modIndex = 1;
+            const newMods: Mod[] = [];
             for (const modName of modlist) {
               if (modName.endsWith('_separator')) {
-                setMods(prev => [...prev, { name: modName.slice(1).replace('_separator', ''), type: 'separator' }]);
+                newMods.push({
+                  name: modName.slice(1).replace('_separator', ''),
+                  type: 'separator',
+                });
               } else {
                 const directives = modlistJson.Directives.filter(d => d.To.startsWith(`mods\\${modName.slice(1)}\\`));
                 const archiveHash = directives.find(d => d.$type === 'FromArchive')?.ArchiveHashPath?.[0];
-                if (archiveHash) {
-                  const archive = modlistJson.Archives.find(a => a.Hash === archiveHash);
-                  if (archive) {
-                    setMods(prev => [
-                      ...prev,
-                      {
-                        name: modName.slice(1),
-                        type: 'mod',
-                        index: modIndex++,
-                        active: modName.startsWith('+'),
-                        gameName: archive.State.GameName,
-                        version: archive.State.Version,
-                        directUrl: archive.State.Url,
-                        modId: archive.State.ModID,
-                        fileId: archive.State.FileID,
-                        size: archive.Size,
-                      },
-                    ]);
-                  }
-                } else {
-                  setMods(prev => [
-                    ...prev,
-                    {
-                      name: modName.slice(1),
-                      index: modIndex++,
-                      type: 'mod',
-                      active: modName.startsWith('+'),
-                    },
-                  ]);
-                }
+                const archive = modlistJson.Archives.find(a => a.Hash === archiveHash);
+                newMods.push({
+                  name: modName.slice(1),
+                  type: 'mod',
+                  index: modIndex++,
+                  active: modName.startsWith('+'),
+                  gameName: archive?.State.GameName,
+                  version: archive?.State.Version,
+                  directUrl: archive?.State.Url,
+                  modId: archive?.State.ModID,
+                  fileId: archive?.State.FileID,
+                  size: archive?.Size,
+                });
               }
             }
+            setMods(newMods);
 
             setMessages(prev => [...prev, { text: 'Success!', type: 'success' }]);
           } catch (error) {
@@ -124,7 +123,7 @@ export function App() {
           }
         }}
       />
-      <ProgressMessages messages={messages} />
+      <ProgressMessages messages={messages} setShowGuide={setShowGuide} />
       <HowItWorks />
       <WhyGuideJack />
     </div>

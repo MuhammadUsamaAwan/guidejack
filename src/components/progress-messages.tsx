@@ -2,7 +2,13 @@ import { AlertCircleIcon, CheckCircleIcon, TerminalIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert';
 import type { ProgressMessage } from '~/types';
 
-export function ProgressMessages({ messages }: { messages: ProgressMessage[] }) {
+export function ProgressMessages({
+  messages,
+  setShowGuide,
+}: {
+  messages: ProgressMessage[];
+  setShowGuide: (show: boolean) => void;
+}) {
   return (
     <div className='mx-auto max-w-xl space-y-2'>
       {messages.map(msg => (
@@ -15,7 +21,25 @@ export function ProgressMessages({ messages }: { messages: ProgressMessage[] }) 
             <TerminalIcon className='size-4' />
           )}
           <AlertTitle className='capitalize'>{msg.type}</AlertTitle>
-          <AlertDescription>{msg.text}</AlertDescription>
+          <AlertDescription>
+            {msg.type === 'success' ? (
+              <span>
+                {msg.text}{' '}
+                <button
+                  type='button'
+                  onClick={() => {
+                    setShowGuide(true);
+                    window.scrollTo({ top: 0 });
+                  }}
+                  className='cursor-pointer underline'
+                >
+                  Show Guide
+                </button>
+              </span>
+            ) : (
+              msg.text
+            )}
+          </AlertDescription>
         </Alert>
       ))}
     </div>

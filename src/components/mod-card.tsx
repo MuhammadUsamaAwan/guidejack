@@ -58,7 +58,7 @@ export function ModCard({ mod }: { mod: Mod }) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              Mod Page
+              Download
             </a>
           </Badge>
         )}
