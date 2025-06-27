@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Dropzone } from './components/dropzone';
 import { Hero } from './components/hero';
 import { HowItWorks } from './components/how-it-works';
+import { KnownIssues } from './components/known-issues';
 import { ModCard } from './components/mod-card';
 import { ModFiles } from './components/mod-files';
 import { ModListInfoCard } from './components/modlist-info-card';
@@ -83,7 +84,11 @@ export function App() {
 
             setMessages(prev => [...prev, { text: 'Processing modlist files...', type: 'info' }]);
             const modFiles = modlistJson.Directives.filter(
-              d => d.To.startsWith('profiles\\') && d.To.endsWith('.ini') && !d.To.includes('backup')
+              d =>
+                d.To.startsWith('profiles\\') &&
+                d.To.endsWith('.ini') &&
+                !d.To.toLowerCase().includes('backup') &&
+                !d.To.toLowerCase().includes('cache')
             );
             const loadOrderFile = modlistJson.Directives.find(d => d.To.endsWith('loadorder.txt'));
             const modFilesList: ModFile[] = modFiles.map(d => ({
@@ -169,6 +174,7 @@ export function App() {
       <ProgressMessages messages={messages} setShowGuide={setShowGuide} />
       <HowItWorks />
       <WhyGuideJack />
+      <KnownIssues />
     </div>
   );
 }
