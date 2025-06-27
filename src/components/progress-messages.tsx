@@ -1,6 +1,6 @@
 import { AlertCircleIcon, CheckCircleIcon, TerminalIcon } from 'lucide-react';
-import type { ProgressMessage } from '~/types/types';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert';
+import type { ProgressMessage } from '~/types';
 
 export function ProgressMessages({ messages }: { messages: ProgressMessage[] }) {
   return (
