@@ -7,25 +7,14 @@ import { ModCard } from './components/mod-card';
 import { ModListInfoCard } from './components/modlist-info-card';
 import { ProgressMessages } from './components/progress-messages';
 import { WhyGuideJack } from './components/why-guidejack';
-import { modsData } from './mods';
 import type { Mod, ModListInfo, Modlist } from './types';
 
 export function App() {
   const [messages, setMessages] = useState<{ text: string; type: 'info' | 'success' | 'error' }[]>([]);
-  const [mods, setMods] = useState<Mod[]>(modsData);
-  const [modInfo, setModInfo] = useState<ModListInfo>({
-    author: 'Phoenix',
-    description: '',
-    gameType: 'SkyrimSpecialEdition',
-    name: 'Skyrim Modding Essentials',
-    readme: 'https://thephoenixflavour.com/skyrim-se/sme/introduction/',
-    website: 'https://thephoenixflavour.com/skyrim-se/sme/introduction/',
-    version: '0.0.1.0',
-    isNSFW: false,
-  });
+  const [mods, setMods] = useState<Mod[]>([]);
+  const [modInfo, setModInfo] = useState<ModListInfo>();
 
-  // TODO: Testing
-  if (messages.length === 0) {
+  if (messages.some(m => m.type === 'success')) {
     return (
       <div className='mx-auto max-w-4xl space-y-8 py-10'>
         <ModListInfoCard modlistInfo={modInfo!} />
@@ -88,7 +77,7 @@ export function App() {
               if (modName.endsWith('_separator')) {
                 setMods(prev => [...prev, { name: modName.slice(1).replace('_separator', ''), type: 'separator' }]);
               } else {
-                const directives = modlistJson.Directives.filter(d => d.To.startsWith(`mods\\${modName.slice(1)}`));
+                const directives = modlistJson.Directives.filter(d => d.To.startsWith(`mods\\${modName.slice(1)}\\`));
                 const archiveHash = directives.find(d => d.$type === 'FromArchive')?.ArchiveHashPath?.[0];
                 if (archiveHash) {
                   const archive = modlistJson.Archives.find(a => a.Hash === archiveHash);

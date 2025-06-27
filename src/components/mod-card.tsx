@@ -16,11 +16,11 @@ export function ModCard({ mod }: { mod: Mod }) {
 
   return (
     <div>
-      <h3>
+      <div className='font-medium'>
         {mod.index}. {mod.name}
-        {mod.version ? `- v${mod.version}` : ''}
-        {mod.size ? ` (${formatSize(mod.size)})` : ''}
-      </h3>
+        {mod.version && <span className='text-muted-foreground'> — v{mod.version}</span>}
+        {mod.size && <span className='text-muted-foreground'> ({formatSize(mod.size)})</span>}
+      </div>
       <div className='flex gap-2'>
         {mod.directUrl && (
           <Badge variant='secondary'>
