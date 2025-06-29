@@ -30,44 +30,36 @@ export function ModCard({
       </div>
       <div className='flex gap-2'>
         {mod.directUrl && (
-          <Badge variant='secondary'>
-            <a href={mod.directUrl} target='_blank' rel='noopener noreferrer'>
-              Direct Download
-            </a>
-          </Badge>
+          <a href={mod.directUrl} target='_blank' rel='noopener noreferrer'>
+            <Badge variant='secondary'>Direct Download</Badge>
+          </a>
         )}
         {mod.modId && mod.fileId && (
-          <Badge variant='secondary'>
-            <a
-              href={`https://www.nexusmods.com/${mod.gameName?.toLowerCase()}/mods/${mod.modId}`}
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Nexux Page
-            </a>
-          </Badge>
+          <a
+            href={`https://www.nexusmods.com/${mod.gameName?.toLowerCase()}/mods/${mod.modId}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Badge variant='secondary'>Nexux Page</Badge>
+          </a>
         )}
         {mod.modId && mod.fileId && (
-          <Badge variant='secondary'>
-            <a
-              href={`https://www.nexusmods.com/${mod.gameName?.toLowerCase()}/mods/${mod.modId}?tab=files`}
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Nexus Files Tab
-            </a>
-          </Badge>
+          <a
+            href={`https://www.nexusmods.com/${mod.gameName?.toLowerCase()}/mods/${mod.modId}?tab=files`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Badge variant='secondary'>Nexus Files Tab</Badge>
+          </a>
         )}
         {mod.modId && mod.fileId && (
-          <Badge variant='secondary'>
-            <a
-              href={`https://www.nexusmods.com/${mod.gameName?.toLowerCase()}/mods/${mod.modId}?tab=files&file_id=${mod.fileId}`}
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Nexus Download
-            </a>
-          </Badge>
+          <a
+            href={`https://www.nexusmods.com/${mod.gameName?.toLowerCase()}/mods/${mod.modId}?tab=files&file_id=${mod.fileId}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Badge variant='secondary'>Nexus Download</Badge>
+          </a>
         )}
       </div>
       {mod.description && <p className='mt-2 text-muted-foreground text-sm'>{mod.description}</p>}
